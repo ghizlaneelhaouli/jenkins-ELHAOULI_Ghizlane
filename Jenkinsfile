@@ -14,7 +14,7 @@ pipeline {
         stage('Create Docker Image') {
             steps {
                 script {
-                    def imageName = "teemo156/testjenkins:latest"
+                    def imageName = "ghizlaneelhaouli/jenkins-elhaouli_ghizlane:latest"
                     sh "docker build -t ${imageName} ."
                 }
             }
@@ -22,7 +22,7 @@ pipeline {
         stage('Scan Docker Image') {
             steps {
                 script {
-                    def imageName = "teemo156/testjenkins:latest"
+                    def imageName = "ghizlaneelhaouli/jenkins-elhaouli_ghizlane:latest"
                     sh "docker scout cves ${imageName}"
                 }
             }
@@ -30,8 +30,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    def imageName = "teemo156/testjenkins:latest"
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    def imageName = "ghizlaneelhaouli/jenkins-elhaouli_ghizlane:latest"
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-ghizlane', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                         sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
                         sh "docker push ${imageName}"
                     }
@@ -41,10 +41,10 @@ pipeline {
         stage('Deploy to Remote Server') {
             steps {
                 script {
-                    def imageName = "teemo156/testjenkins:latest"
-                    sshagent(['remote-server-credentials-id']) {
+                    def imageName = "ghizlaneelhaouli/jenkins-elhaouli_ghizlane:latest"
+                    sshagent(['remote-server-credentials-ghizlane']) {
                         sh """
-                        ssh user@remote-server "
+                        ssh ghizlane@remote-server "
                             docker pull ${imageName} &&
                             docker rm -f app-container || true &&
                             docker run -d --name app-container -p 8989:80 ${imageName}
