@@ -23,5 +23,4 @@ HEALTHCHECK --interval=30s --timeout=3s \
 
 # Expose the application port
 EXPOSE 8989
-
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
