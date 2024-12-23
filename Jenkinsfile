@@ -46,7 +46,8 @@ pipeline {
                         sh """
                         ssh user@remote-server "
                             docker pull ${imageName} &&
-                            docker run -d --name app-container -p 80:80 ${imageName}
+                            docker rm -f app-container || true &&
+                            docker run -d --name app-container -p 8989:80 ${imageName}
                         "
                         """
                     }
