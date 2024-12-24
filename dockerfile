@@ -1,26 +1,20 @@
 # Build stage
-FROM maven:3.9.9-openjdk-17 AS builder
+FROM maven:3.9-openjdk-17 AS builder
 
 # Cache Maven dependencies
-COPY ./pom.xml /tmp/
-WORKDIR /tmp
+WORKDIR /app
+COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Build application
-WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests
+# Copy source code and build
+COPY src ./src
+RUN mvn package -DskipTests
 
 # Run stage
 FROM openjdk:17-slim
 
 WORKDIR /app
-COPY --from=builder /app/target/*.jar /app/app.jar
+COPY --from=builder /app/target/*.jar app.jar
 
-# Add healthcheck
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -f http://localhost:8989/ || exit 1
-
-# Expose the application port
-EXPOSE 8989
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
