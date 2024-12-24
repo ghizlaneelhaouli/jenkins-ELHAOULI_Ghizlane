@@ -1,4 +1,4 @@
-# Utiliser une image de base Maven pour la phase de build
+C:\Users\DELL\Desktop\zenkins11\.idea\dockerfile# Utiliser une image de base Maven pour la phase de build
 FROM maven:3.8.8-eclipse-temurin-17 AS builder
 
 # Définir le répertoire de travail
