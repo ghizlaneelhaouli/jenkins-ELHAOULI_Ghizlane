@@ -1,12 +1,13 @@
 # Build stage
-FROM maven:3.9-openjdk-17 AS builder
+FROM maven:3.8.8-eclipse-temurin-17 AS builder
+
+WORKDIR /app
 
 # Cache Maven dependencies
-WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Copy source code and build
+# Build the application
 COPY src ./src
 RUN mvn package -DskipTests
 
