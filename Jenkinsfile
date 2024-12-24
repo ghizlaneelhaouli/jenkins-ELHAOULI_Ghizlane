@@ -12,13 +12,12 @@ pipeline {
             }
         }
         stage('Create Docker Image') {
-            steps {
-                script {
-                    def imageName = "ghizlaneelhaouli/jenkins-elhaouli_ghizlane:latest"
-                    sh "docker build -t ${imageName} ."
-                }
-            }
-        }
+             steps {
+                 bat 'docker build -t my-image .'
+             }
+         }
+
+
         stage('Scan Docker Image') {
             steps {
                 script {
