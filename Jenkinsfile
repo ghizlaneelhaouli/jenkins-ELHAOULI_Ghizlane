@@ -14,9 +14,8 @@ pipeline {
         stage('Create Docker Image') {
             steps {
                 script {
-                    // Remplacez le nom de l'image Docker par celui de votre projet
                     def imageName = "ghizlaneelhaouli/myproject:latest"
-                    sh "docker build -t ${imageName} ."
+                    bat "docker build -t ${imageName} ."
                 }
             }
         }
@@ -24,7 +23,7 @@ pipeline {
             steps {
                 script {
                     def imageName = "ghizlaneelhaouli/myproject:latest"
-                    sh "docker scout cves ${imageName}"
+                    bat "docker scout cves ${imageName}"
                 }
             }
         }
@@ -33,8 +32,10 @@ pipeline {
                 script {
                     def imageName = "ghizlaneelhaouli/myproject:latest"
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials-id', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
-                        sh "docker push ${imageName}"
+                        bat """
+                        echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                        docker push ${imageName}
+                        """
                     }
                 }
             }
@@ -44,7 +45,7 @@ pipeline {
                 script {
                     def imageName = "ghizlaneelhaouli/myproject:latest"
                     sshagent(['remote-server-credentials-id']) {
-                        sh """
+                        bat """
                         ssh user@remote-server "
                             docker pull ${imageName} &&
                             docker stop app-container || true &&
