@@ -1,5 +1,5 @@
-C:\Users\DELL\Desktop\zenkins11\.idea\dockerfile# Utiliser une image de base Maven pour la phase de build
-FROM maven:3.8.8-eclipse-temurin-17 AS builder
+# Étape 1 : Utiliser une image Maven pour la phase de build
+FROM maven:3.9.9-eclipse-temurin-17 AS builder
 
 # Définir le répertoire de travail
 WORKDIR /app
@@ -12,7 +12,7 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn package -DskipTests
 
-# Utiliser une image OpenJDK pour exécuter l'application
+# Étape 2 : Utiliser une image légère OpenJDK pour exécuter l'application
 FROM openjdk:17-slim
 
 # Définir le répertoire de travail
@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 
 # Exposer le port utilisé par l'application
-EXPOSE 8080
+EXPOSE 8989
 
 # Commande pour exécuter l'application
 ENTRYPOINT ["java", "-jar", "app.jar"]
